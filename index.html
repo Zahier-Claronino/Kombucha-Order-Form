@@ -123,11 +123,11 @@
   </form>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzrCXeYO58KrTsIx4dFIO7C6co12C9sXwF0wi4Lr1VoAVXjMplJs__MY46Q1_DXlfM/exec'; // Replace this
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzm8w_i-ovr2p021cwbVMxTDl4NHNaS4AabZc32RnbNY67KPaF2slMMdIHujmVe5Hsu/exec';
     const form = document.getElementById('orderForm');
     const msg = document.getElementById('msg');
 
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
 
       const formData = new FormData(form);
@@ -140,7 +140,6 @@
         orders: []
       };
 
-      // Loop through all product inputs and collect quantities > 0
       form.querySelectorAll('table input[type="number"]').forEach(input => {
         const qty = parseInt(input.value);
         if (qty > 0) {
@@ -151,23 +150,34 @@
         }
       });
 
-      fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(res => res.json())
-      .then(() => {
-        msg.textContent = "✅ Order submitted successfully!";
+      if (data.orders.length === 0) {
+        msg.textContent = "❌ Please enter at least one order quantity.";
+        return;
+      }
+
+      try {
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const result = await response.json();
+        msg.textContent = result.status === "success" ? "✅ Order submitted successfully!" : "❌ Error submitting order.";
         form.reset();
-      })
-      .catch(err => {
+      } catch (err) {
         console.error(err);
         msg.textContent = "❌ Error submitting order.";
-      });
+      }
     });
   </script>
 </body>
 </html>
+
+
 
 
