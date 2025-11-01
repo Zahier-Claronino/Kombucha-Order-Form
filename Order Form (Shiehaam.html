@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #f7f8fa;
+    }
+    h2 {
+      text-align: center;
+    }
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      margin-top: 1.5rem;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #eee;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 1rem 2rem;
+      background: #28a745;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    #msg {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Order Form</h2>
+
+  <form id="orderForm">
+    <label>Store Name:</label>
+    <input type="text" name="storeName" required />
+
+    <label>Phone / WhatsApp Number:</label>
+    <input type="text" name="phone" required />
+
+    <label>Delivery Region:</label>
+    <input type="text" name="region" required />
+
+    <label>Delivery Address:</label>
+    <textarea name="address" required></textarea>
+
+    <label>Notes:</label>
+    <textarea name="notes"></textarea>
+
+    <h3>Product Orders</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Size</th>
+          <th>Order Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Original</td><td>340ml Bottle</td><td><input type="number" name="Original_340" min="0"></td></tr>
+        <tr><td>Rose Geranium</td><td>340ml Bottle</td><td><input type="number" name="RoseGeranium_340" min="0"></td></tr>
+        <tr><td>Ginger</td><td>340ml Bottle</td><td><input type="number" name="Ginger_340" min="0"></td></tr>
+        <tr><td>Lemon Buchu</td><td>340ml Bottle</td><td><input type="number" name="LemonBuchu_340" min="0"></td></tr>
+        <tr><td>Grapefruit Ginger</td><td>340ml Bottle</td><td><input type="number" name="GrapefruitGinger_340" min="0"></td></tr>
+        <tr><td>Hibiscus Lime</td><td>340ml Bottle</td><td><input type="number" name="HibiscusLime_340" min="0"></td></tr>
+        <tr><td>Yerba Mate, Lions Mane, Ginseng - Purple</td><td>340ml Bottle</td><td><input type="number" name="Purple_340" min="0"></td></tr>
+        <tr><td>Sceletium Honeybush - Yellow</td><td>340ml Bottle</td><td><input type="number" name="Yellow_340" min="0"></td></tr>
+        <tr><td>Butterfly Pea, Passion Flower, Blue Lotus - Blue</td><td>340ml Bottle</td><td><input type="number" name="Blue_340" min="0"></td></tr>
+        <tr><td>Rose Geranium</td><td>250ml Can</td><td><input type="number" name="RoseGeranium_250" min="0"></td></tr>
+        <tr><td>Lemongrass Rooibos</td><td>250ml Can</td><td><input type="number" name="Lemongrass_250" min="0"></td></tr>
+        <tr><td>Lemon Buchu</td><td>250ml Can</td><td><input type="number" name="LemonBuchu_250" min="0"></td></tr>
+        <tr><td>Grapefruit Ginger</td><td>250ml Can</td><td><input type="number" name="GrapefruitGinger_250" min="0"></td></tr>
+        <tr><td>Hibiscus Lime</td><td>250ml Can</td><td><input type="number" name="HibiscusLime_250" min="0"></td></tr>
+        <tr><td>Vanilla Bean Coffee</td><td>250ml Can</td><td><input type="number" name="Vanilla_250" min="0"></td></tr>
+        <tr><td>Original Family Size</td><td>660ml Bottle</td><td><input type="number" name="Original_660" min="0"></td></tr>
+        <tr><td>Rose Family Size</td><td>660ml Bottle</td><td><input type="number" name="Rose_660" min="0"></td></tr>
+        <tr><td>Ginger Family Size</td><td>660ml Bottle</td><td><input type="number" name="Ginger_660" min="0"></td></tr>
+      </tbody>
+    </table>
+
+    <button type="submit">Submit Order</button>
+    <p id="msg"></p>
+  </form>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzm8w_i-ovr2p021cwbVMxTDl4NHNaS4AabZc32RnbNY67KPaF2slMMdIHujmVe5Hsu/exec'; // Replace this
+    const form = document.getElementById('orderForm');
+    const msg = document.getElementById('msg');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = {
+        storeName: formData.get('storeName'),
+        phone: formData.get('phone'),
+        region: formData.get('region'),
+        address: formData.get('address'),
+        notes: formData.get('notes'),
+        orders: []
+      };
+
+      // Loop through all product inputs and collect quantities > 0
+      form.querySelectorAll('table input[type="number"]').forEach(input => {
+        const qty = parseInt(input.value);
+        if (qty > 0) {
+          const row = input.closest('tr');
+          const product = row.children[0].innerText;
+          const size = row.children[1].innerText;
+          data.orders.push({ product, size, quantity: qty });
+        }
+      });
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.json())
+      .then(() => {
+        msg.textContent = "✅ Order submitted successfully!";
+        form.reset();
+      })
+      .catch(err => {
+        console.error(err);
+        msg.textContent = "❌ Error submitting order.";
+      });
+    });
+  </script>
+</body>
+</html>
